@@ -1,6 +1,4 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "api/check-breach.js", "use": "@vercel/node" }
-  ]
+  "builds": [{ "src": "api/check-breach.js", "use": "@vercel/node" }]
 }

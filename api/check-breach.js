@@ -15,7 +15,7 @@ export default async function handler(req, res) {
       {
         headers: {
           "hibp-api-key": API_KEY,
-          "user-agent": "ZeroPrivacyApp",
+          "user-agent": "ZeroPrivacyApp (support@zeroprivacy.com)",
         },
       }
     );
