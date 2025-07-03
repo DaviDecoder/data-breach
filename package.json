@@ -4,7 +4,7 @@
   "type": "module",
   "main": "check-breach.js",
   "scripts": {
-    "start": "node check-breach.js"
+    "start": "node api/check-breach.js"
   },
   "dependencies": {
     "node-fetch": "^3.3.2"
