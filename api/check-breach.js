@@ -2,7 +2,6 @@
 
 import express from "express";
 import dotenv from "dotenv";
-import fetch from "node-fetch"; // Make sure it's in your package.json
 
 dotenv.config();
 
@@ -25,11 +24,14 @@ app.get("/scan", async (req, res) => {
   if (!email) return res.status(400).json({ error: "Missing email parameter" });
 
   try {
-    const response = await fetch(`https://thirdparty.com/api/search?email=${email}`, {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
-    });
+    const response = await fetch(
+      `https://thirdparty.com/api/search?email=${email}`,
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      }
+    );
 
     const data = await response.json();
 
