@@ -1,6 +1,7 @@
 {
   "name": "data-breach-api",
   "version": "1.0.0",
+  "type": "module",
   "main": "api/check-breach.js",
   "scripts": {
     "start": "node api/check-breach.js"
