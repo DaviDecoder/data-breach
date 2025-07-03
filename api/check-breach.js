@@ -1,33 +1,40 @@
-// api/check-breach.js
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Only POST allowed" });
-  }
+import express from "express";
+import fetch from "node-fetch";
 
-  const { email } = req.body;
-  const API_KEY = process.env.HIBP_API_KEY;
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get("/api/check-breach", async (req, res) => {
+  const email = req.query.email;
+  if (!email) return res.status(400).json({ error: "Email is required" });
 
   try {
-    const hibpRes = await fetch(
+    const response = await fetch(
       `https://haveibeenpwned.com/api/v3/breachedaccount/${encodeURIComponent(
         email
       )}?truncateResponse=false`,
       {
         headers: {
-          "hibp-api-key": API_KEY,
-          "user-agent": "ZeroPrivacyApp (support@whynotprivacy.com)",
+          "hibp-api-key": process.env.HIBP_API_KEY,
+          "user-agent": "ZeroPrivacyApp (sponsor@whynotprivacy.com)",
         },
       }
     );
 
-    if (hibpRes.status === 404) {
-      return res.json({ breached: false, breaches: [] });
+    if (!response.ok) {
+      const errorText = await response.text();
+      return res.status(response.status).json({ error: errorText });
     }
 
-    const data = await hibpRes.json();
-    return res.json({ breached: true, breaches: data });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Internal server error" });
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", details: err.message });
   }
-}
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
