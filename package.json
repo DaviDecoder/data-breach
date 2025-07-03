@@ -1,12 +1,12 @@
 {
   "name": "data-breach-api",
   "version": "1.0.0",
-  "type": "module",
-  "main": "check-breach.js",
+  "main": "api/check-breach.js",
   "scripts": {
     "start": "node api/check-breach.js"
   },
   "dependencies": {
-    "node-fetch": "^3.3.2"
+    "express": "^4.18.2",
+    "axios": "^1.6.0"
   }
 }
