@@ -1,39 +1,45 @@
+// /api/check-breach.js
+
 import express from "express";
+import dotenv from "dotenv";
+import fetch from "node-fetch"; // Make sure it's in your package.json
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
-app.get("/api/check-breach", async (req, res) => {
+// For JSON body parsing (if needed)
+app.use(express.json());
+
+// Example route
+app.get("/", (req, res) => {
+  res.send("Server is running. Use /scan?email=example@example.com");
+});
+
+// Actual breach scanning route
+app.get("/scan", async (req, res) => {
   const email = req.query.email;
-  if (!email) return res.status(400).json({ error: "Email is required" });
+  const apiKey = process.env.API_KEY;
+
+  if (!email) return res.status(400).json({ error: "Missing email parameter" });
 
   try {
-    const response = await fetch(
-      `https://haveibeenpwned.com/api/v3/breachedaccount/${encodeURIComponent(
-        email
-      )}?truncateResponse=false`,
-      {
-        headers: {
-          "hibp-api-key": process.env.HIBP_API_KEY,
-          "user-agent": "ZeroPrivacyApp (sponsor@whynotprivacy.com)",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      return res.status(response.status).json({ error: errorText });
-    }
+    const response = await fetch(`https://thirdparty.com/api/search?email=${email}`, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    });
 
     const data = await response.json();
-    res.json(data);
+
+    res.json({ email, data });
   } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", details: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch data" });
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
