@@ -2,11 +2,15 @@
 
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Enable CORS for all routes
+app.use(cors());
 
 // For JSON body parsing (if needed)
 app.use(express.json());
@@ -36,8 +40,19 @@ app.get("/scan", async (req, res) => {
       }
     );
 
-    const data = await response.json();
+    if (response.status === 404) {
+      // No breaches found
+      return res.json({ email, data: [] });
+    }
 
+    if (!response.ok) {
+      // Some other error from HIBP
+      return res
+        .status(response.status)
+        .json({ error: "Failed to fetch data" });
+    }
+
+    const data = await response.json();
     res.json({ email, data });
   } catch (err) {
     console.error(err);
