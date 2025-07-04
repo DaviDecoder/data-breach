@@ -25,10 +25,13 @@ app.get("/scan", async (req, res) => {
 
   try {
     const response = await fetch(
-      `https://thirdparty.com/api/search?email=${email}`,
+      `https://haveibeenpwned.com/api/v3/breachedaccount/${encodeURIComponent(
+        email
+      )}?truncateResponse=false`,
       {
         headers: {
-          Authorization: `Bearer ${apiKey}`,
+          "hibp-api-key": process.env.API_KEY,
+          "user-agent": "ZeroPrivacyApp (sponsor@whynotprivacy.com)",
         },
       }
     );
